@@ -60,7 +60,7 @@ function register_settings() {
 
 	add_settings_section(
 		'rsn_settings_section',
-		'Settings',
+		'',
 		__NAMESPACE__ . '\section_callback',
 		'rsn-admin'
 	);
@@ -68,7 +68,7 @@ function register_settings() {
 	// Repo Status
 	add_settings_field(
 		'repo_status',
-		'Enable repository lock',
+		'Lock the repository?',
 		__NAMESPACE__ . '\repo_status_callback',
 		'rsn-admin',
 		'rsn_settings_section'
