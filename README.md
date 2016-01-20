@@ -5,7 +5,7 @@
 Creates a simple endpoint for advertising a project repository status. Used in conjunction with a Git pre-commit hook.
 
 
- ## The future?
+## The future?
 
  - A better way to copy the pre-commit file locally.
  - Have the pre-commit only hit the API once by parsing results.
