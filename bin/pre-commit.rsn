@@ -13,7 +13,7 @@ endpoint_url="http://example.com"
 echo "Getting status of production repo..."
 
 ## Grab the header response
-response_header=$(curl -s -o /dev/null -w "%{http_code}" http://play.ground/repo-status)
+response_header=$(curl -s -o /dev/null -w "%{http_code}" "$endpoint_url")
 
 ## Proceed if 200
 if [[ "200" = $response_header ]]; then
@@ -21,7 +21,7 @@ if [[ "200" = $response_header ]]; then
 	exit 0
 ## Bail if 4oo (or anything else)
 else
-	full_response=$(curl --silent http://play.ground/repo-status)
+	full_response=$(curl --silent "$endpoint_url")
 	echo "==========================================================="
 	echo "The production repo is closed. BLOCKING COMMIT. Full response below:"
 	echo "$full_response"
