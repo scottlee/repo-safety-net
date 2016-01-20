@@ -15,14 +15,20 @@ function setup() {
  */
 function register_endpoint() {
 
-	add_rewrite_tag( '%repo_status%', '([^&]+)' );
-	add_rewrite_rule( 'repo-status/([^&]+)/?', 'index.php?repo_status=$matches[1]', 'top' );
+	add_rewrite_endpoint( 'repo-status', EP_ROOT );
 }
 
 /**
  * Handles the redirect and response.
  */
 function redirect_handler() {
+
+	global $wp_query;
+
+	// Check for repo-status query var
+	if ( ! isset( $wp_query->query_vars['repo-status'] ) ) {
+		return;
+	}
 
 	// Set header response to 200 if repo is open. Else 400.
 	$header_code = ( 'Open' === \Repo_Safety_Net\Admin\_get_option( 'repo_status' ) ) ? 200 : 400;
