@@ -10,6 +10,14 @@
 ## API Endpoint
 endpoint_url="http://example.com/repo-status/"
 
+## Grab current branch.
+## If it's not master, exit.
+current_branch=$(git symbolic-ref HEAD 2>/dev/null)
+
+if [[ 'refs/heads/master' != "$current_branch" ]]; then
+	exit 0
+fi
+
 echo "Getting status of production repo..."
 
 ## Grab the header response
