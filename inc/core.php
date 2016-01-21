@@ -50,15 +50,17 @@ function redirect_handler() {
  * @return string
  */
 function _prepare_response() {
-
 	$options  = \Repo_Safety_Net\Admin\_get_option();
 	$response = '';
 
 	// A bit to clever, but whatever.
 	foreach ( _options_array() as $k => $v ) {
-		$response .= $v . ': ' . $options[ $k ] . "\r\n";
-	}
+		$response .= $v . ': ' . esc_html( $options[ $k ] ) . PHP_EOL;
+		if ( 'Open' === $options[ $k ] ) {
+			break;
+		}
 
+	}
 	return $response;
 }
 
@@ -70,7 +72,7 @@ function _prepare_response() {
 function _options_array() {
 
 	$options_array_map = array(
-		'repo_status'  => 'Repo Status',
+		'repo_status'  => 'Repository Status',
 		'repo_name'    => 'Repository Name',
 		'contact_name' => 'Contact',
 		'message'      => 'Message'
