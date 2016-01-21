@@ -17,13 +17,13 @@ response_header=$(curl -s -o /dev/null -w "%{http_code}" "$endpoint_url")
 
 ## Proceed if 200
 if [[ "200" = $response_header ]]; then
-	echo "The production repo is open. Allowing commit."
+	echo "The production repo is OPEN."
+	echo "Proceeding with commit."
 	exit 0
 ## Bail if 4oo (or anything else)
 else
 	full_response=$(curl --silent "$endpoint_url")
 	echo "==========================================================="
-	echo "The production repo is closed. BLOCKING COMMIT. Full response below:"
 	echo "$full_response"
 	echo "==========================================================="
 	exit 1
