@@ -8,6 +8,9 @@ function setup() {
 
 	add_action( 'init', __NAMESPACE__ . '\register_endpoint' );
 	add_action( 'template_redirect', __NAMESPACE__ . '\redirect_handler' );
+
+	// Allow requests through RSA
+	add_filter( 'restricted_site_access_is_restricted', __NAMESPACE__ . '\allow_with_rsa', 10, 2 );
 }
 
 /**
@@ -25,8 +28,8 @@ function redirect_handler() {
 
 	global $wp_query;
 
-	// Check for repo-status query var
-	if ( ! isset( $wp_query->query_vars['repo-status'] ) ) {
+	// Bail if this isn't a repo-status query
+	if ( ! _is_repo_query( $wp_query ) ) {
 		return;
 	}
 
@@ -41,6 +44,39 @@ function redirect_handler() {
 		wp_die();
 	} else {
 		die;
+	}
+}
+
+/**
+ * Allows repo-status request if the RSA plugin is installed.
+ *
+ * @param string $is_restricted
+ * @param object $wp
+ *
+ * @return bool
+ */
+function allow_with_rsa( $is_restricted, $wp ) {
+
+	if ( _is_repo_query( $wp ) ) {
+		return false;
+	}
+
+	return $is_restricted;
+}
+
+/**
+ * Checks if the repo-status query var is set.
+ *
+ * @param object $wp
+ *
+ * @return bool
+ */
+function _is_repo_query( $wp ) {
+
+	if ( isset( $wp->query_vars['repo-status'] ) ) {
+		return true;
+	} else {
+		return false;
 	}
 }
 
