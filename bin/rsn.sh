@@ -32,7 +32,7 @@ install_hook(){
    echo "Installing pre-commit hook"
    hook_path="$git_path/hooks"
    echo "Downloading hook..."
-   echo "$(curl -o $hook_path/pre-commit https://raw.githubusercontent.com/ryanwelcher/repo-safety-net/develop/bin/pre-commit.rsn)"
+   echo "$(curl -o $hook_path/pre-commit https://raw.githubusercontent.com/scottlee/repo-safety-net/develop/bin/pre-commit)"
    chmod +x "$hook_path/pre-commit"
    echo "Hook Installed."
 }
