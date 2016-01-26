@@ -60,10 +60,13 @@ install_script(){
 
 
 get_status() {
+    read_prefs
     if [ ! $remote_url ]; then
         echo "The remote url for the repo has not been set"
     else
         echo "Getting status for $remote_url"
+        full_response=$(curl --silent "$remote_url")
+        echo $full_response
     fi
 }
 
