@@ -13,18 +13,39 @@ hook_path=false
 # Functions
 
 read_prefs(){
-    if [ -f rsn.prefs ]; then
-        echo 'Reading Prefs'
-        source rsn.prefs
-        if [ $saved_remote_url ]; then
-            remote_url=$saved_remote_url
-        fi
+
+    ## We can pass a path to the
+    ## preferences file we want to load
+    if [ ! -z $1 ]; then
+        prefs_to_load=$1
+    else
+        prefs_to_load="$repo_path/$PREFS_FILE"
+    fi
+
+    ## Check for the prefs file
+    if [ ! -f $prefs_to_load ]; then
+        echo "Error: No preferences file exists at $prefs_to_load"
+        exit 1
+    fi
+
+    #If we're here, we can load the prefs
+    source $prefs_to_load
+
+    if [ $saved_remote_url ]; then
+        remote_url=$saved_remote_url
     fi
 }
 
 
+## Optional arg for a path to check
+## otherwise use this dir as the repo
 is_repo_path_a_git_repo() {
-    git_path="$repo_path/.git"
+
+    if [ ! -z $1 ]; then
+         git_path="$1/.git"
+    else
+        git_path="$repo_path/.git"
+    fi
 
     if [ ! -d $git_path ]; then
         echo "Error: $repo_path is not a git repository"
@@ -64,7 +85,22 @@ install_script(){
 
 
 get_status() {
-    read_prefs
+    if [ ! -z $1 ]; then
+        passed_repo=$1
+        prefs_path="$passed_repo/$PREFS_FILE"
+
+        if [ ! -d $passed_repo ]; then
+            echo "Error: $passed_repo is not a valid directory. Please use the full path."
+            exit 1
+        fi
+
+        is_repo_path_a_git_repo $passed_repo
+
+        read_prefs $prefs_path
+    else
+        read_prefs
+    fi
+
     if [ ! $remote_url ]; then
         echo "The remote url for the repo has not been set"
     else
@@ -85,7 +121,7 @@ version_information() {
 
 # Program
 
-if ! options=$(getopt -o h, i, s, v -l help,install:,repo,status,version -- "$@")
+if ! options=$(getopt -o h, i, s, v -l help,install:,status,version -- "$@")
 then
     exit 1
 fi
@@ -108,7 +144,10 @@ do
         echo " -s, --status     Get the status of this repo."
         exit;;
     -s|--status)
-        get_status
+        case "$1" in
+            "") get_status; exit;;
+            *) get_status "$2"; shift;;
+        esac
         exit;;
     -v|--version)
         version_information
@@ -119,8 +158,6 @@ do
             "") echo "Error: Please provide the remote url"; shift; exit 1;;
             *) remote_url="$2" ; shift;;
         esac;;
-    -r|--repo)
-        repo_path="$2" ; shift;;
     (--) shift;;
     (-*) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
     (*) shift;;
