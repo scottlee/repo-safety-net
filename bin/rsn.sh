@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 # Vars
+readonly HOOK_TEMPLATE=https://raw.githubusercontent.com/scottlee/repo-safety-net/develop/bin/pre-commit
+
 remote_url=""
 installing=false
 repo_path="$(pwd)"
@@ -32,7 +34,7 @@ install_hook(){
    echo "Installing pre-commit hook"
    hook_path="$git_path/hooks"
    echo "Downloading hook..."
-   echo "$(curl -o $hook_path/pre-commit https://raw.githubusercontent.com/scottlee/repo-safety-net/develop/bin/pre-commit)"
+   echo "$(curl -o $hook_path/pre-commit $HOOK_TEMPLATE)"
    chmod +x "$hook_path/pre-commit"
    echo "Hook Installed."
 }
