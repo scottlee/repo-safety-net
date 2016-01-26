@@ -7,8 +7,32 @@
 # @todo Rework below to only hit the server once by parsing results.
 #########################################
 
-## API Endpoint
-endpoint_url="http://example.com/repo-status/"
+
+## Check for a passed URL parameter.
+if [ ! -z $1 ]; then
+	echo "URL parameter passed. Bypassing rsn.prefs file check."
+	endpoint_url=$1
+
+## If no parameter passed, check for a prefs file.
+elif [ ! -f rsn.prefs ]; then
+	echo "The rsn.prefs file was not found."
+	echo "Please ensure it exists. Or try running rsn --install again."
+    exit 1
+
+## Else assume everything is just dandy.
+else
+	source rsn.prefs
+
+	## One last check, for a url in the prefs file.
+	if [ $saved_remote_url ]; then
+		endpoint_url=$saved_remote_url
+	else
+		echo "The rsn.prefs file exists but no URL is set."
+		echo "Nor was a URL parameter passed. Exiting."
+		exit 1
+	fi
+fi
+	
 
 ## Grab current branch.
 ## If it's not master, exit.
