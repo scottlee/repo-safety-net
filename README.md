@@ -6,7 +6,7 @@ Helps prevents commits to `origin/master` by first fetching the status of the re
 
 **This repository is comprised of two pieces:**
 
-1. A WordPress plugin that creates an endpoint (example.com/repo-status) for advertising a project repository status. 
+1. A WordPress plugin that creates an endpoint (example.com/repo-status/) for advertising a project repository status. 
 2. A pair of Bash scripts. One for installing a Git pre-commit hook. And the other is the pre-commit hook itself.
 
 ## Installation (Client)
@@ -23,7 +23,7 @@ Helps prevents commits to `origin/master` by first fetching the status of the re
 
 ## Usage
 1. Clone a project repository as you normally would.
-2. Install the pre-commit hook via rsn.sh `rsn --install example.com/repo-status path/to/repository`
+2. Install the pre-commit hook via rsn.sh `rsn --install example.com/repo-status/ path/to/repository` **Note:** The trailing slash is required for the URL.
 
 ## Future Ideas
 
