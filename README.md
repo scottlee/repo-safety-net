@@ -1,15 +1,33 @@
 # Repo Safety Net
 
+## Overview
+
 **Note: Currently a WIP on the `develop` branch. Use at your own risk.**
 
-Creates a simple endpoint (example.com/repo-status) for advertising a project repository status. Used in conjunction with a Git pre-commit hook.
+## This repository is comprised of two pieces:
 
+1. A WordPress plugin that creates an endpoint (example.com/repo-status) for advertising a project repository status. 
+2. A pair of Bash scripts. One for installing a Git pre-commit hook. And the other is the pre-commit hook itself.
 
-## The future?
+## Installation (Client)
 
- - A better way to copy the pre-commit file locally.
- - Have the pre-commit only hit the API once by parsing results.
- - Log the activity of when/who locked the repo.
- - "Re-enable the repo after ___ hours"
- - Restrict pre-commit script to running only on master.
+1. `curl -o https://raw.githubusercontent.com/scottlee/repo-safety-net/develop/bin/rsn.sh`
+2. `chmod +x rsn.sh` 
+3. Optional: `sudo mv rsn.sh /usr/local/bin/rsn`
+
+## Installation (Server)
+
+1. Clone this repo.
+2. Activate the plugin.
+3. Configure. (Plugins > Repo Safety Net)
+
+## Usage
+1. Clone a project repository as you normally would.
+2. Install the pre-commit hook via rsn.sh `rsn --install example.com/repo-status path/to/repository`
+
+## Future Ideas
+
+- Have the pre-commit only hit the API once by parsing results.
+- Log the activity of when/who locked the repo.
+- "Re-enable the repo after ___ hours"
 
