@@ -96,6 +96,8 @@ do
     -h|--help)
         echo "Repo Safety Net"
         echo ""
+        echo "VERSION:"
+        echo "v$VERSION"
         echo ""
         echo "USAGE:"
         echo "   ./bin/rsn.sh [options]"
