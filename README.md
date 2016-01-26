@@ -5,6 +5,7 @@
 Helps prevents commits to `origin/master` by first fetching the status of the repository. If the repository is advertised (via API endpoint) as closed the commit is blocked, locally. Conversely, if the repository is open the commit is accepted.
 
 **This repository is comprised of two pieces:**
+
 1. A WordPress plugin that creates an endpoint (example.com/repo-status) for advertising a project repository status. 
 2. A pair of Bash scripts. One for installing a Git pre-commit hook. And the other is the pre-commit hook itself.
 
