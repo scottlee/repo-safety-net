@@ -1,21 +1,24 @@
 #!/usr/bin/env bash
 # Vars
-
-remote_url=false
+remote_url=""
 installing=false
 repo_path="$(pwd)"
 git_path=false
 hook_path=false
 
-if [ -f rsn.prefs ]; then
-    echo 'Reading Prefs'
-    source rsn.prefs
-    if [ $saved_remote_url ]; then
-        remote_url=$saved_remote_url
-    fi
-fi
-
 # Functions
+
+read_prefs(){
+    if [ -f rsn.prefs ]; then
+        echo 'Reading Prefs'
+        source rsn.prefs
+        if [ $saved_remote_url ]; then
+            remote_url=$saved_remote_url
+        fi
+    fi
+}
+
+
 is_repo_path_a_git_repo() {
     git_path="$repo_path/.git"
 
@@ -37,6 +40,7 @@ install_hook(){
 
 ## Pretty rough at the moment but this is the idea for
 ## saving some per-repo settings
+## @todo put the file in the .git dir and/or make it a hidden file
 install_settings_file() {
     echo "Creating RSN preferences file"
     if [ ! -f rsn.prefs ]; then
@@ -48,20 +52,25 @@ install_settings_file() {
 
 install_script(){
    is_repo_path_a_git_repo
-   #install_hook
+   install_hook
    install_settings_file
 }
 
 
 get_status() {
-    echo "Getting status for $remote_url"
+    if [ ! $remote_url ]; then
+        echo "The remote url for the repo has not been set"
+    else
+        echo "Getting status for $remote_url"
+    fi
 }
+
 
 
 
 # Program
 
-if ! options=$(getopt -o h, i, s -l help,install:,status -- "$@")
+if ! options=$(getopt -o h, i, s -l help,install:,repo,status -- "$@")
 then
     exit 1
 fi
@@ -86,7 +95,12 @@ do
         exit;;
     -i|--install)
         installing=true
-        remote_url="$2" ; shift;;
+        case "$2" in
+            "") echo "Error: Please provide the remote url"; shift; exit 1;;
+            *) remote_url="$2" ; shift;;
+        esac;;
+    -r|--repo)
+        repo_path="$2" ; shift;;
     (--) shift;;
     (-*) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
     (*) shift;;
@@ -94,6 +108,7 @@ do
     shift
 done
 
+read_prefs
 
 if [[ $installing && $remote_url ]]; then
     echo "Installing Repo Safety Net for:"
