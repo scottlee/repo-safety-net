@@ -45,12 +45,12 @@ install_hook(){
 ## saving some per-repo settings
 install_settings_file() {
     echo "Creating RSN preferences file"
-    echo $remote_url
-    if [ ! -f "$PREFS_FILE" ]; then
-        touch "$PREFS_FILE"
-    else
-       > "$PREFS_FILE"
+
+    if [ -f "$PREFS_FILE" ]; then
+       rm "$PREFS_FILE"
     fi
+    
+    touch "$PREFS_FILE"
     echo "prefs_installed=true" >> $PREFS_FILE
     echo "saved_remote_url=$remote_url" >> $PREFS_FILE
 }
