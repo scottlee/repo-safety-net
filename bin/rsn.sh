@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Vars
 readonly HOOK_TEMPLATE=https://raw.githubusercontent.com/scottlee/repo-safety-net/develop/bin/pre-commit
+readonly PREFS_FILE=rsn.prefs
 
 remote_url=""
 installing=false
@@ -42,14 +43,16 @@ install_hook(){
 
 ## Pretty rough at the moment but this is the idea for
 ## saving some per-repo settings
-## @todo put the file in the .git dir and/or make it a hidden file
 install_settings_file() {
     echo "Creating RSN preferences file"
-    if [ ! -f rsn.prefs ]; then
-        touch rsn.prefs
-        echo "prefs_installed=true" >> rsn.prefs
+    echo $remote_url
+    if [ ! -f "$PREFS_FILE" ]; then
+        touch "$PREFS_FILE"
+    else
+       > "$PREFS_FILE"
     fi
-    echo "saved_remote_url=$remote_url" >> rsn.prefs
+    echo "prefs_installed=true" >> $PREFS_FILE
+    echo "saved_remote_url=$remote_url" >> $PREFS_FILE
 }
 
 install_script(){
@@ -113,7 +116,7 @@ do
     shift
 done
 
-read_prefs
+
 
 if [[ $installing && $remote_url ]]; then
     echo "Installing Repo Safety Net for:"
