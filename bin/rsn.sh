@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Vars
+readonly VERSION="0.1.0"
 readonly HOOK_TEMPLATE=https://raw.githubusercontent.com/scottlee/repo-safety-net/develop/bin/pre-commit
 readonly PREFS_FILE=rsn.prefs
 
@@ -74,11 +75,17 @@ get_status() {
 }
 
 
+version_information() {
+    echo ""
+    echo "Repo Safety Net: v$VERSION"
+    echo ""
+}
+
 
 
 # Program
 
-if ! options=$(getopt -o h, i, s -l help,install:,repo,status -- "$@")
+if ! options=$(getopt -o h, i, s, v -l help,install:,repo,status,version -- "$@")
 then
     exit 1
 fi
@@ -89,6 +96,8 @@ do
     -h|--help)
         echo "Repo Safety Net"
         echo ""
+        echo "VERSION:"
+        echo "v$VERSION"
         echo ""
         echo "USAGE:"
         echo "   ./bin/rsn.sh [options]"
@@ -100,6 +109,9 @@ do
         exit;;
     -s|--status)
         get_status
+        exit;;
+    -v|--version)
+        version_information
         exit;;
     -i|--install)
         installing=true
