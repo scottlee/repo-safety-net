@@ -11,7 +11,7 @@ Helps prevents commits to `origin/master` by first fetching the status of the re
 
 ## Installation (Client)
 
-1. `curl -o https://raw.githubusercontent.com/scottlee/repo-safety-net/develop/bin/rsn.sh`
+1. `curl -O https://raw.githubusercontent.com/scottlee/repo-safety-net/develop/bin/rsn.sh`
 2. `chmod +x rsn.sh` 
 3. Optional: `sudo mv rsn.sh /usr/local/bin/rsn`
 
