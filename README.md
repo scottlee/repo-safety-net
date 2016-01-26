@@ -1,8 +1,8 @@
 # Repo Safety Net
 
-**Currently a WIP so use at your own risk.**
+**Note: Currently a WIP on the `develop` branch. Use at your own risk.**
 
-Creates a simple endpoint for advertising a project repository status. Used in conjunction with a Git pre-commit hook.
+Creates a simple endpoint (example.com/repo-status) for advertising a project repository status. Used in conjunction with a Git pre-commit hook.
 
 
 ## The future?
