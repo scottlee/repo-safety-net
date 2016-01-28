@@ -174,6 +174,6 @@ if [[ $installing && $remote_url ]]; then
     install_script
 else
     echo "Please specify the repo you want to connect to:"
-    echo "rsh --install 'http://path.com/endpoint'"
+    echo "rsh --install 'http://path.com/'"
     exit 1
 fi
