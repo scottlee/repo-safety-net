@@ -109,6 +109,8 @@ get_status() {
         header=$(echo "$full_response"| tail -n1)
         if [[ "200" = "$header" ]]; then
             body=$(echo "$full_response"  | head -n1)
+        elif [[ "404" = $header ]]; then
+            body="Error: The remote url returned a 404."
         else
             body=$(echo "$full_response"  | head -n4)
         fi
