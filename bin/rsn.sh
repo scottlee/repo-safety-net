@@ -115,6 +115,9 @@ get_status() {
             body=$(echo "$full_response"  | head -n4)
         fi
         echo "$body"
+
+
+
     fi
 }
 
