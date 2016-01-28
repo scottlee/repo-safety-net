@@ -100,13 +100,19 @@ get_status() {
         read_prefs
     fi
 
-    if [ ! $remote_url ]; then
+    if [ ! "$remote_url" ]; then
         echo "The remote url for the repo has not been set"
     else
         echo "Getting status for $remote_url"
-        full_response=$(curl -i -D --silent "$remote_url")
-        echo $full_response
 
+        full_response=$( curl -qsw '\n%{http_code}' "$remote_url" ) 2>/dev/null
+        header=$(echo "$full_response"| tail -n1)
+        if [[ "200" = "$header" ]]; then
+            body=$(echo "$full_response"  | head -n1)
+        else
+            body=$(echo "$full_response"  | head -n4)
+        fi
+        echo "$body"
     fi
 }
 
