@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Vars
 readonly VERSION="0.1.0"
-readonly HOOK_TEMPLATE=https://raw.githubusercontent.com/scottlee/repo-safety-net/feature/one-curl-to-rule-them-all/bin/pre-commit
+readonly HOOK_TEMPLATE=https://raw.githubusercontent.com/scottlee/repo-safety-net/develop/bin/pre-commit
 readonly PREFS_FILE=rsn.prefs
 
 remote_url=""
