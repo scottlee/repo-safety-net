@@ -44,8 +44,9 @@ fi
 
 echo "Getting status of production repo..."
 
-## Grab the header response
-response_header=$(curl -s -o /dev/null -w "%{http_code}" "$endpoint_url")
+## Grab the full response
+full_response=$( curl -qsw '\n%{http_code}' "$endpoint_url" ) 2>/dev/null
+response_header=$(echo "$full_response"| tail -n1)
 
 ## Proceed if 200
 if [[ "200" = $response_header ]]; then
@@ -54,9 +55,9 @@ if [[ "200" = $response_header ]]; then
 	exit 0
 ## Bail if 4oo (or anything else)
 else
-	full_response=$(curl --silent "$endpoint_url")
+	body=$(echo "$full_response"  | head -n4)
 	echo "==========================================================="
-	echo "$full_response"
+	echo "$body"
 	echo "==========================================================="
 	exit 1
 fi

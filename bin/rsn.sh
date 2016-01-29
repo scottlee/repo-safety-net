@@ -40,7 +40,6 @@ read_prefs(){
 ## Optional arg for a path to check
 ## otherwise use this dir as the repo
 is_repo_path_a_git_repo() {
-
     if [ ! -z $1 ]; then
          git_path="$1/.git"
     else
@@ -101,12 +100,24 @@ get_status() {
         read_prefs
     fi
 
-    if [ ! $remote_url ]; then
+    if [ ! "$remote_url" ]; then
         echo "The remote url for the repo has not been set"
     else
         echo "Getting status for $remote_url"
-        full_response=$(curl --silent "$remote_url")
-        echo $full_response
+
+        full_response=$( curl -qsw '\n%{http_code}' "$remote_url" ) 2>/dev/null
+        header=$(echo "$full_response"| tail -n1)
+        if [[ "200" = "$header" ]]; then
+            body=$(echo "$full_response"  | head -n1)
+        elif [[ "404" = $header ]]; then
+            body="Error: The remote url returned a 404."
+        else
+            body=$(echo "$full_response"  | head -n4)
+        fi
+        echo "$body"
+
+
+
     fi
 }
 
