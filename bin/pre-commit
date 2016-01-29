@@ -45,7 +45,7 @@ fi
 echo "Getting status of production repo..."
 
 ## Grab the full response
-full_response=$( curl -qsw '\n%{http_code}' "$remote_url" ) 2>/dev/null
+full_response=$( curl -qsw '\n%{http_code}' "$endpoint_url" ) 2>/dev/null
 response_header=$(echo "$full_response"| tail -n1)
 
 ## Proceed if 200
