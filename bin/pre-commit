@@ -1,0 +1,63 @@
+#!/bin/sh
+
+#########################################
+# Grab the repo status from an endpoint.
+# Allow the commit if the repo is open.
+# Abort the commit it's closed.
+# @todo Rework below to only hit the server once by parsing results.
+#########################################
+
+
+## Check for a passed URL parameter.
+if [ ! -z $1 ]; then
+	echo "URL parameter passed. Bypassing rsn.prefs file check."
+	endpoint_url=$1
+
+## If no parameter passed, check for a prefs file.
+elif [ ! -f rsn.prefs ]; then
+	echo "The rsn.prefs file was not found."
+	echo "Please ensure it exists. Or try running rsn --install again."
+    exit 1
+
+## Else assume everything is just dandy.
+else
+	source rsn.prefs
+
+	## One last check, for a url in the prefs file.
+	if [ $saved_remote_url ]; then
+		endpoint_url=$saved_remote_url
+	else
+		echo "The rsn.prefs file exists but no URL is set."
+		echo "Nor was a URL parameter passed. Exiting."
+		exit 1
+	fi
+fi
+	
+
+## Grab current branch.
+## If it's not master, exit.
+current_branch=$(git symbolic-ref HEAD 2>/dev/null)
+
+if [[ 'refs/heads/master' != "$current_branch" ]]; then
+	exit 0
+fi
+
+echo "Getting status of production repo..."
+
+## Grab the full response
+full_response=$( curl -qsw '\n%{http_code}' "$endpoint_url" ) 2>/dev/null
+response_header=$(echo "$full_response"| tail -n1)
+
+## Proceed if 200
+if [[ "200" = $response_header ]]; then
+	echo "The production repo is OPEN."
+	echo "Proceeding with commit."
+	exit 0
+## Bail if 4oo (or anything else)
+else
+	body=$(echo "$full_response"  | head -n4)
+	echo "==========================================================="
+	echo "$body"
+	echo "==========================================================="
+	exit 1
+fi
