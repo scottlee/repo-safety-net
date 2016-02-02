@@ -2,7 +2,7 @@
 # Vars
 readonly VERSION="0.1.0"
 readonly HOOK_TEMPLATE=https://raw.githubusercontent.com/scottlee/repo-safety-net/develop/bin/pre-commit
-readonly PRE_PUSH=https://raw.githubusercontent.com/scottlee/repo-safety-net/develop/bin/pre-commit
+readonly PRE_PUSH=https://raw.githubusercontent.com/scottlee/repo-safety-net/feature/is-vip-flag/bin/pre-push
 readonly PREFS_FILE=rsn.prefs
 
 remote_url=""
@@ -82,7 +82,7 @@ install_hook(){
         echo "Installing pre-commit and post-merge hooks ... "
     else
         echo "Installing pre-push hook ... "
-        echo "$(curl -#o $hook_path/pre-push $HOOK_TEMPLATE)"
+        echo "$(curl -#o $hook_path/pre-push $PRE_PUSH)"
         chmod +x "$hook_path/pre-push"
         echo "Hook Installed."
     fi
