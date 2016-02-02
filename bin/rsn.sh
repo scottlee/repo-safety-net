@@ -5,6 +5,7 @@ readonly HOOK_TEMPLATE=https://raw.githubusercontent.com/scottlee/repo-safety-ne
 readonly PREFS_FILE=rsn.prefs
 
 remote_url=""
+repo_type="git-only"
 installing=false
 repo_path="$(pwd)"
 git_path=false
@@ -52,11 +53,32 @@ is_repo_path_a_git_repo() {
     fi
 }
 
+
+# The main install routine
+install() {
+    if [[ $installing && $remote_url ]]; then
+        echo "Installing Repo Safety Net for:"
+        echo "Repo: $repo_path"
+        echo "Remote Endoint: $remote_url"
+        is_repo_path_a_git_repo
+        install_hook
+        install_settings_file
+
+        echo "Installation Complete"
+    else
+        echo "Please specify the repo you want to connect to:"
+        echo "rsh --install 'http://path.com/'"
+        exit 1
+    fi
+}
+
+
+
 install_hook(){
-   echo "Installing pre-commit hook"
+   echo "Installing pre-commit hook ... "
    hook_path="$git_path/hooks"
    echo "Downloading hook..."
-   echo "$(curl -o $hook_path/pre-commit $HOOK_TEMPLATE)"
+   echo "$(curl -#o $hook_path/pre-commit $HOOK_TEMPLATE)"
    chmod +x "$hook_path/pre-commit"
    echo "Hook Installed."
 }
@@ -65,7 +87,7 @@ install_hook(){
 ## Pretty rough at the moment but this is the idea for
 ## saving some per-repo settings
 install_settings_file() {
-    echo "Creating RSN preferences file"
+    echo "Creating RSN preferences file ... "
 
     if [ -f "$PREFS_FILE" ]; then
        rm "$PREFS_FILE"
@@ -74,12 +96,9 @@ install_settings_file() {
     touch "$PREFS_FILE"
     echo "prefs_installed=true" >> $PREFS_FILE
     echo "saved_remote_url=$remote_url" >> $PREFS_FILE
-}
+    echo "repo_type=$repo_type" >> $PREFS_FILE
 
-install_script(){
-   is_repo_path_a_git_repo
-   install_hook
-   install_settings_file
+    echo "Preferences saved"
 }
 
 
@@ -132,7 +151,7 @@ version_information() {
 
 # Program
 
-if ! options=$(getopt -o h, i, s, v -l help,install:,status,version -- "$@")
+if ! options=$(getopt -o h, i, s, v -l help,install:,status,version,isvip -- "$@")
 then
     exit 1
 fi
@@ -162,29 +181,23 @@ do
         exit;;
     -v|--version)
         version_information
-        exit;;
+        exit 1;;
     -i|--install)
         installing=true
         case "$2" in
             "") echo "Error: Please provide the remote url"; shift; exit 1;;
-            *) remote_url="$2" ; shift;;
-        esac;;
+            *) remote_url="$2" ;
+        esac
+        case "$3" in
+            "") repo_type="git-only"; shift;;
+            "--isvip") repo_type="vip" ; shift;;
+        esac
+        # Run the install routine
+        install
+        exit 1;;
     (--) shift;;
     (-*) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
     (*) shift;;
     esac
     shift
 done
-
-
-
-if [[ $installing && $remote_url ]]; then
-    echo "Installing Repo Safety Net for:"
-    echo "Repo: $repo_path"
-    echo "Remote Endoint: $remote_url"
-    install_script
-else
-    echo "Please specify the repo you want to connect to:"
-    echo "rsh --install 'http://path.com/'"
-    exit 1
-fi
