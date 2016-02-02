@@ -1,20 +1,11 @@
 #!/bin/sh
 
 #########################################
-# Grab the repo status from an endpoint.
-# Allow the commit if the repo is open.
-# Abort the commit it's closed.
-# @todo Rework below to only hit the server once by parsing results.
+# PRE_PUSH Hook
 #########################################
 
 
-## Check for a passed URL parameter.
-if [ ! -z $1 ]; then
-	echo "URL parameter passed. Bypassing rsn.prefs file check."
-	endpoint_url=$1
-
-## If no parameter passed, check for a prefs file.
-elif [ ! -f rsn.prefs ]; then
+if [ ! -f rsn.prefs ]; then
 	echo "The rsn.prefs file was not found."
 	echo "Please ensure it exists. Or try running rsn --install again."
     exit 1
