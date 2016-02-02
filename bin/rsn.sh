@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Vars
 readonly VERSION="0.1.0"
-readonly HOOK_TEMPLATE=https://raw.githubusercontent.com/scottlee/repo-safety-net/develop/bin/pre-commit
+readonly PRE_COMMIT=https://raw.githubusercontent.com/scottlee/repo-safety-net/develop/bin/pre-commit
 readonly PRE_PUSH=https://raw.githubusercontent.com/scottlee/repo-safety-net/feature/is-vip-flag/bin/pre-push
 readonly PREFS_FILE=rsn.prefs
 
@@ -80,7 +80,7 @@ install_hook(){
 
     if [[ "vip" = $repo_type ]]; then
         echo "Installing pre-commit and post-merge hooks ... "
-        echo "$(curl -#o $hook_path/pre-commit $HOOK_TEMPLATE)"
+        echo "$(curl -#o $hook_path/pre-commit $PRE_COMMIT)"
        chmod +x "$hook_path/pre-commit"
        echo "Hook Installed."
     else
@@ -142,9 +142,6 @@ get_status() {
             body=$(echo "$full_response"  | head -n4)
         fi
         echo "$body"
-
-
-
     fi
 }
 
@@ -168,18 +165,19 @@ while [ $# -gt 0 ]
 do
     case $1 in
     -h|--help)
-        echo "Repo Safety Net"
-        echo ""
-        echo "VERSION:"
-        echo "v$VERSION"
-        echo ""
+        version_information
         echo "USAGE:"
-        echo "   ./bin/rsn.sh [options]"
+        echo "   rsn [options]"
         echo ""
         echo "OPTIONS:"
-        echo " -h, --help       Destroys humanity or tells you how to use this - I can't remember"
-        echo " -i, --install:    Installs the script and the git hook to this repo"
-        echo " -s, --status     Get the status of this repo."
+        echo " -h, --help       Destroys humanity or tells you how to use this - I can't remember."
+        echo ""
+        echo " -i, --install:   Installs the script and the git hook to this repo."
+        echo "                  Requires the url as the second parameter and optionally --isvip and the third"
+        echo "                  Example: rsn --install www.site.com/repo-status --isvip"
+        echo ""
+        echo " -s, --status     Get the status of this repo. Accepts an optional path to a repo."
+        echo "                  Example rsn --status ~/repos/my-protected-repo "
         exit;;
     -s|--status)
         case "$1" in
