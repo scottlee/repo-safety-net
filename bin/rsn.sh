@@ -76,12 +76,22 @@ install() {
 
 
 install_hook(){
-   echo "Installing pre-commit hook ... "
-   hook_path="$git_path/hooks"
-   echo "Downloading hook..."
-   echo "$(curl -#o $hook_path/pre-commit $HOOK_TEMPLATE)"
-   chmod +x "$hook_path/pre-commit"
-   echo "Hook Installed."
+    hook_path="$git_path/hooks"
+
+    if [[ "vip" = $repo_type ]]; then
+        echo "Installing pre-commit and post-merge hooks ... "
+    else
+        echo "Installing pre-push hook ... "
+        echo "$(curl -#o $hook_path/pre-push $HOOK_TEMPLATE)"
+        chmod +x "$hook_path/pre-push"
+        echo "Hook Installed."
+    fi
+#   echo "Installing pre-commit hook ... "
+#   hook_path="$git_path/hooks"
+#   echo "Downloading hook..."
+#   echo "$(curl -#o $hook_path/pre-commit $HOOK_TEMPLATE)"
+#   chmod +x "$hook_path/pre-commit"
+#   echo "Hook Installed."
 }
 
 

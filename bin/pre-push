@@ -36,11 +36,11 @@ fi
 
 ## Grab current branch.
 ## If it's not master, exit.
-current_branch=$(git symbolic-ref HEAD 2>/dev/null)
+#current_branch=$(git symbolic-ref HEAD 2>/dev/null)
 
-if [[ 'refs/heads/master' != "$current_branch" ]]; then
-	exit 0
-fi
+#if [[ 'refs/heads/master' != "$current_branch" ]]; then
+#	exit 0
+#fi
 
 echo "Getting status of production repo..."
 
@@ -51,8 +51,8 @@ response_header=$(echo "$full_response"| tail -n1)
 ## Proceed if 200
 if [[ "200" = $response_header ]]; then
 	echo "The production repo is OPEN."
-	echo "Proceeding with commit."
-	exit 0
+	echo "Proceeding with push."
+	exit 1 # Bail on anything for now
 ## Bail if 4oo (or anything else)
 else
 	body=$(echo "$full_response"  | head -n4)
