@@ -43,7 +43,7 @@ response_header=$(echo "$full_response"| tail -n1)
 if [[ "200" = $response_header ]]; then
 	echo "The production repo is OPEN."
 	echo "Proceeding with push."
-	exit 1 # Bail on anything for now
+	exit 0
 ## Bail if 4oo (or anything else)
 else
 	body=$(echo "$full_response"  | head -n4)
