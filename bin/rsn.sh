@@ -129,18 +129,55 @@ version_information() {
 }
 
 
+##################
+# RUN THE PROGRAM
+##################
 
-# Program
 
-if ! options=$(getopt -o h, i, s, v -l help,install:,status,version -- "$@")
-then
-    exit 1
-fi
+# Get the subcommand
+subcommand=$1; shift;
 
-while [ $# -gt 0 ]
-do
-    case $1 in
-    -h|--help)
+case $subcommand in
+    install)
+        installing=true
+        while getopts ":p:t:" opt; do
+            case ${opt} in
+                p )
+                  remote_url=$OPTARG
+                  ;;
+                t )
+                  repo_type=$OPTARG
+                  ;;
+                \? )
+                  echo "Invalid Option: -$OPTARG" 1>&2
+                  exit 1
+                  ;;
+                : )
+                  echo "Invalid Option: -$OPTARG requires an argument" 1>&2
+                  exit 1
+                  ;;
+            esac
+        done
+        ;;
+    repo_type)
+        case "$1" in
+            "vip"|"git-only") repo_type=$1;;
+            "") echo "Error: Please provide the type of repo. Options: vip, git-only"; exit 1;;
+            *) echo "Error: Please provide the type of repo. Options: vip, git-only"; exit 1;;
+        esac
+        ;;
+    status)
+        case "$1" in
+            "") get_status; exit;;
+            *) get_status "$1";
+        esac
+        exit 0
+        ;;
+    version)
+        version_information
+        exit 0
+        ;;
+    help)
         echo "Repo Safety Net"
         echo ""
         echo "VERSION:"
@@ -153,28 +190,9 @@ do
         echo " -h, --help       Destroys humanity or tells you how to use this - I can't remember"
         echo " -i, --install:    Installs the script and the git hook to this repo"
         echo " -s, --status     Get the status of this repo."
-        exit;;
-    -s|--status)
-        case "$1" in
-            "") get_status; exit;;
-            *) get_status "$2"; shift;;
-        esac
-        exit;;
-    -v|--version)
-        version_information
-        exit;;
-    -i|--install)
-        installing=true
-        case "$2" in
-            "") echo "Error: Please provide the remote url"; shift; exit 1;;
-            *) remote_url="$2" ; shift;;
-        esac;;
-    (--) shift;;
-    (-*) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
-    (*) shift;;
-    esac
-    shift
-done
+    shift $((OPTIND -1))
+    ;;
+esac
 
 
 
