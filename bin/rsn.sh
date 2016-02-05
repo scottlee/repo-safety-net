@@ -178,18 +178,28 @@ case $subcommand in
         exit 0
         ;;
     help)
-        echo "Repo Safety Net"
-        echo ""
-        echo "VERSION:"
-        echo "v$VERSION"
-        echo ""
-        echo "USAGE:"
-        echo "   ./bin/rsn.sh [options]"
-        echo ""
-        echo "OPTIONS:"
-        echo " -h, --help       Destroys humanity or tells you how to use this - I can't remember"
-        echo " -i, --install:    Installs the script and the git hook to this repo"
-        echo " -s, --status     Get the status of this repo."
+        echo "#############################################################################"
+        echo "#"
+        echo "# Repo Safety Net"
+        echo "#"
+        echo "# VERSION:"
+        echo "# v$VERSION"
+        echo "#"
+        echo "# USAGE:"
+        echo "#   rsn [command] [-flag] [value]"
+        echo "#"
+        echo "#OPTIONS:"
+        echo "# help:      Destroys humanity or tells you how to use this - I can't remember"
+        echo "#"
+        echo "# install:   Installs the script and the git hook to this repo."
+        echo "#            Params: "
+        echo "#              -p: The remote url provided by the plugin"
+        echo "#              -t: The type of repo. Accepted options are vip and git-only"
+        echo "#"
+        echo "# status:    Get the status of this repo."
+        echo "#"
+        echo "#############################################################################"
+        exit 0
     shift $((OPTIND -1))
     ;;
 esac
