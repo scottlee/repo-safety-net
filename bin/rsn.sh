@@ -189,7 +189,7 @@ case $subcommand in
         echo "# USAGE:"
         echo "#   rsn [command] [-flag] [value]"
         echo "#"
-        echo "#OPTIONS:"
+        echo "# OPTIONS:"
         echo "# help:      Destroys humanity or tells you how to use this - I can't remember"
         echo "#"
         echo "# install:   Installs the script and the git hook to this repo."
