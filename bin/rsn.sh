@@ -165,6 +165,7 @@ case $subcommand in
             "") echo "Error: Please provide the type of repo. Options: vip, git-only"; exit 1;;
             *) echo "Error: Please provide the type of repo. Options: vip, git-only"; exit 1;;
         esac
+        exit 0
         ;;
     status)
         case "$1" in
