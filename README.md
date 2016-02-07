@@ -11,7 +11,7 @@ Helps prevents commits to `origin/master` by first fetching the status of the re
 
 ## Installation (Client)
 
-1. `curl -O https://raw.githubusercontent.com/scottlee/repo-safety-net/develop/bin/rsn.sh`
+1. `curl -O https://raw.githubusercontent.com/scottlee/repo-safety-net/master/bin/rsn.sh`
 2. `chmod +x rsn.sh` 
 3. Optional: `sudo mv rsn.sh /usr/local/bin/rsn`
 
@@ -27,7 +27,6 @@ Helps prevents commits to `origin/master` by first fetching the status of the re
 
 ## Future Ideas
 
-- Have the pre-commit only hit the API once by parsing results.
 - Log the activity of when/who locked the repo.
 - "Re-enable the repo after ___ hours"
 
