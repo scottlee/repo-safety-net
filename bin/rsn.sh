@@ -153,57 +153,92 @@ version_information() {
 }
 
 
+##################
+# RUN THE PROGRAM
+##################
 
-# Program
 
-if ! options=$(getopt -o h, i, s, v -l help,install:,status,version,isvip -- "$@")
-then
-    exit 1
-fi
 
-while [ $# -gt 0 ]
-do
-    case $1 in
-    -h|--help)
-        version_information
-        echo "USAGE:"
-        echo "   rsn [options]"
-        echo ""
-        echo "OPTIONS:"
-        echo " -h, --help       Destroys humanity or tells you how to use this - I can't remember."
-        echo ""
-        echo " -i, --install:   Installs the script and the git hook to this repo."
-        echo "                  Requires the url as the second parameter and optionally --isvip and the third"
-        echo "                  Example: rsn --install www.site.com/repo-status --isvip"
-        echo ""
-        echo " -s, --status     Get the status of this repo. Accepts an optional path to a repo."
-        echo "                  Example rsn --status ~/repos/my-protected-repo "
-        exit;;
-    -s|--status)
+# Get the subcommand
+subcommand=$1; shift;
+
+case $subcommand in
+    install)
+        installing=true
+        while getopts ":p:t:" opt; do
+            case ${opt} in
+                p )
+                  remote_url=$OPTARG
+                  ;;
+                t )
+                  repo_type=$OPTARG
+                  ;;
+                \? )
+                  echo "Invalid Option: -$OPTARG" 1>&2
+                  exit 1
+                  ;;
+                : )
+                  echo "Invalid Option: -$OPTARG requires an argument" 1>&2
+                  exit 1
+                  ;;
+            esac
+        done
+        ;;
+    repo_type)
+        case "$1" in
+            "vip"|"git-only") repo_type=$1;;
+            "") echo "Error: Please provide the type of repo. Options: vip, git-only"; exit 1;;
+            *) echo "Error: Please provide the type of repo. Options: vip, git-only"; exit 1;;
+        esac
+        exit 0
+        ;;
+    status)
         case "$1" in
             "") get_status; exit;;
-            *) get_status "$2"; shift;;
+            *) get_status "$1";
         esac
-        exit;;
-    -v|--version)
+        exit 0
+        ;;
+    version)
         version_information
-        exit 1;;
-    -i|--install)
-        installing=true
-        case "$2" in
-            "") echo "Error: Please provide the remote url"; shift; exit 1;;
-            *) remote_url="$2" ;
-        esac
-        case "$3" in
-            "") repo_type="git-only"; shift;;
-            "--isvip") repo_type="vip" ; shift;;
-        esac
-        # Run the install routine
-        install
-        exit 1;;
-    (--) shift;;
-    (-*) echo "$0: error - unrecognized option $1" 1>&2; exit 1;;
-    (*) shift;;
-    esac
-    shift
-done
+        exit 0
+        ;;
+    help)
+        echo "#############################################################################"
+        echo "#"
+        echo "# Repo Safety Net"
+        echo "#"
+        echo "# VERSION:"
+        echo "# v$VERSION"
+        echo "#"
+        echo "# USAGE:"
+        echo "#   rsn [command] [-flag] [value]"
+        echo "#"
+        echo "# OPTIONS:"
+        echo "# help:      Destroys humanity or tells you how to use this - I can't remember"
+        echo "#"
+        echo "# install:   Installs the script and the git hook to this repo."
+        echo "#            Params: "
+        echo "#              -p: The remote url provided by the plugin"
+        echo "#              -t: The type of repo. Accepted options are vip and git-only"
+        echo "#"
+        echo "# status:    Get the status of this repo."
+        echo "#"
+        echo "#############################################################################"
+        exit 0
+    shift $((OPTIND -1))
+    ;;
+esac
+
+
+
+if [[ $installing && $remote_url ]]; then
+    echo "Installing Repo Safety Net for:"
+    echo "Repo: $repo_path"
+    echo "Remote Endoint: $remote_url"
+    install_script
+else
+    echo "Please specify the repo you want to connect to:"
+    echo "rsh --install 'http://path.com/'"
+    exit 1
+fi
