@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 # Vars
 readonly VERSION="0.1.0"
-readonly HOOK_TEMPLATE=https://raw.githubusercontent.com/scottlee/repo-safety-net/develop/bin/pre-commit
+readonly PRE_COMMIT=https://raw.githubusercontent.com/scottlee/repo-safety-net/develop/bin/pre-commit
+readonly POST_MERGE=https://raw.githubusercontent.com/scottlee/repo-safety-net/develop/bin/pre-push
+readonly PRE_PUSH=https://raw.githubusercontent.com/scottlee/repo-safety-net/developgit /bin/pre-push
 readonly PREFS_FILE=rsn.prefs
 
 remote_url=""
+repo_type="git-only"
 installing=false
 repo_path="$(pwd)"
 git_path=false
@@ -52,20 +55,54 @@ is_repo_path_a_git_repo() {
     fi
 }
 
+
+# The main install routine
+install() {
+    if [[ $installing && $remote_url ]]; then
+        echo ""
+        echo "Installing Repo Safety Net for:"
+        echo "Repo: $repo_path"
+        echo "Remote Endoint: $remote_url"
+        echo ""
+        is_repo_path_a_git_repo
+        install_hook
+        install_settings_file
+
+        echo "Installation Complete"
+    else
+        echo "Please specify the repo you want to connect to:"
+        echo "rsh --install 'http://path.com/'"
+        exit 1
+    fi
+}
+
+
+
 install_hook(){
-   echo "Installing pre-commit hook"
-   hook_path="$git_path/hooks"
-   echo "Downloading hook..."
-   echo "$(curl -o $hook_path/pre-commit $HOOK_TEMPLATE)"
-   chmod +x "$hook_path/pre-commit"
-   echo "Hook Installed."
+    hook_path="$git_path/hooks"
+
+    if [[ "vip" = $repo_type ]]; then
+        echo "Installing pre-commit hook ... "
+        echo "$(curl -#o $hook_path/pre-commit $PRE_COMMIT)"
+        chmod +x "$hook_path/pre-commit"
+        echo "Installing post-merge hook ... "
+        echo "$(curl -#o $hook_path/post-merge $POST_MERGE)"
+        chmod +x "$hook_path/post-merge"
+        echo "Hooks Installed."
+        echo ""
+    else
+        echo "Installing pre-push hook ... "
+        echo "$(curl -#o $hook_path/pre-push $PRE_PUSH)"
+        chmod +x "$hook_path/pre-push"
+        echo "Hook Installed."
+    fi
 }
 
 
 ## Pretty rough at the moment but this is the idea for
 ## saving some per-repo settings
 install_settings_file() {
-    echo "Creating RSN preferences file"
+    echo "Creating RSN preferences file ... "
 
     if [ -f "$PREFS_FILE" ]; then
        rm "$PREFS_FILE"
@@ -74,12 +111,10 @@ install_settings_file() {
     touch "$PREFS_FILE"
     echo "prefs_installed=true" >> $PREFS_FILE
     echo "saved_remote_url=$remote_url" >> $PREFS_FILE
-}
+    echo "repo_type=$repo_type" >> $PREFS_FILE
 
-install_script(){
-   is_repo_path_a_git_repo
-   install_hook
-   install_settings_file
+    echo "Preferences saved"
+    echo ""
 }
 
 
@@ -115,9 +150,6 @@ get_status() {
             body=$(echo "$full_response"  | head -n4)
         fi
         echo "$body"
-
-
-
     fi
 }
 
@@ -132,6 +164,7 @@ version_information() {
 ##################
 # RUN THE PROGRAM
 ##################
+
 
 
 # Get the subcommand
@@ -208,12 +241,10 @@ esac
 
 
 if [[ $installing && $remote_url ]]; then
-    echo "Installing Repo Safety Net for:"
-    echo "Repo: $repo_path"
-    echo "Remote Endoint: $remote_url"
-    install_script
+
+    install
 else
     echo "Please specify the repo you want to connect to:"
-    echo "rsh --install 'http://path.com/'"
+    echo "rsh install -p 'http://path.com/'"
     exit 1
 fi
