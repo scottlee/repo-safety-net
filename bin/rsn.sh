@@ -59,9 +59,11 @@ is_repo_path_a_git_repo() {
 # The main install routine
 install() {
     if [[ $installing && $remote_url ]]; then
+        echo ""
         echo "Installing Repo Safety Net for:"
         echo "Repo: $repo_path"
         echo "Remote Endoint: $remote_url"
+        echo ""
         is_repo_path_a_git_repo
         install_hook
         install_settings_file
@@ -80,12 +82,14 @@ install_hook(){
     hook_path="$git_path/hooks"
 
     if [[ "vip" = $repo_type ]]; then
-        echo "Installing pre-commit and post-merge hooks ... "
+        echo "Installing pre-commit hook ... "
         echo "$(curl -#o $hook_path/pre-commit $PRE_COMMIT)"
         chmod +x "$hook_path/pre-commit"
+        echo "Installing post-merge hook ... "
         echo "$(curl -#o $hook_path/post-merge $POST_MERGE)"
         chmod +x "$hook_path/post-merge"
         echo "Hooks Installed."
+        echo ""
     else
         echo "Installing pre-push hook ... "
         echo "$(curl -#o $hook_path/pre-push $PRE_PUSH)"
@@ -110,6 +114,7 @@ install_settings_file() {
     echo "repo_type=$repo_type" >> $PREFS_FILE
 
     echo "Preferences saved"
+    echo ""
 }
 
 
@@ -236,12 +241,10 @@ esac
 
 
 if [[ $installing && $remote_url ]]; then
-    echo "Installing Repo Safety Net for:"
-    echo "Repo: $repo_path"
-    echo "Remote Endoint: $remote_url"
-    install_script
+
+    install
 else
     echo "Please specify the repo you want to connect to:"
-    echo "rsh --install 'http://path.com/'"
+    echo "rsh install -p 'http://path.com/'"
     exit 1
 fi
