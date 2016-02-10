@@ -43,6 +43,11 @@ Example: `rsn status` or `rsn status ~/repos/my-awesome-project`
 
 `help`: Generates help information.
 
+## Changing Repo Types
+
+Currently, changing repo types can be done by removing the installed git hooks manually from the. .git/hooks folder and then runnning `rsn install` with the new repo type.
+
+
 
 ## Future Ideas
 
