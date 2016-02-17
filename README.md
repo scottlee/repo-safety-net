@@ -7,7 +7,7 @@ Helps prevents commits to `origin/master` by first fetching the status of the re
 **This repository is comprised of two pieces:**
 
 1. A WordPress plugin that creates an endpoint (example.com/repo-status/) for advertising a project repository status. 
-2. A pair of Bash scripts. One for installing a Git pre-commit hook. And the other is the pre-commit hook itself.
+2. A trio of Bash scripts that are installed as various Git hooks.
 
 ## Installation (Client)
 
@@ -46,11 +46,4 @@ Example: `rsn status` or `rsn status ~/repos/my-awesome-project`
 ## Changing Repo Types
 
 Currently, changing repo types can be done by removing the installed git hooks manually from the. .git/hooks folder and then runnning `rsn install` with the new repo type.
-
-
-
-## Future Ideas
-
-- Log the activity of when/who locked the repo.
-- "Re-enable the repo after ___ hours"
 
