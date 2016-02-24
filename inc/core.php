@@ -34,7 +34,8 @@ function redirect_handler() {
 	}
 
 	// Set header response to 200 if repo is open. Else 400.
-	$header_code = ( 'Open' === \Repo_Safety_Net\Admin\_get_option( 'repo_status' ) ) ? 200 : 400;
+	$options = \Repo_Safety_Net\Admin\_get_option();
+	$header_code = ( 'Open' === $options['repo_status'] ) ? 200 : 400;
 	@header( 'Content-Type: text/plain; charset=' . get_option( 'blog_charset' ), true, $header_code );
 
 	// Echo the repo info
