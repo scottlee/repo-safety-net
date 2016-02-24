@@ -34,11 +34,12 @@ function redirect_handler() {
 	}
 
 	// Set header response to 200 if repo is open. Else 400.
-	$header_code = ( 'Open' === \Repo_Safety_Net\Admin\_get_option( 'repo_status' ) ) ? 200 : 400;
+	$options     = \Repo_Safety_Net\Admin\_get_option();
+	$header_code = ( 'Open' === $options['repo_status'] ) ? 200 : 400;
 	@header( 'Content-Type: text/plain; charset=' . get_option( 'blog_charset' ), true, $header_code );
 
 	// Echo the repo info
-	echo _prepare_response();
+	echo _prepare_response( $options );
 
 	if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
 		wp_die();
@@ -83,10 +84,17 @@ function _is_repo_query( $wp ) {
 /**
  * Beautifies the options array for the response
  *
- * @return string
+ * @param array $options
+ *
+ * @return string|void
  */
-function _prepare_response() {
-	$options  = \Repo_Safety_Net\Admin\_get_option();
+function _prepare_response( $options ) {
+
+	// Bail early
+	if ( ! $options || ! is_array( $options ) ) {
+		return;
+	}
+
 	$response = '';
 
 	// A bit to clever, but whatever.
@@ -97,6 +105,7 @@ function _prepare_response() {
 		}
 
 	}
+
 	return $response;
 }
 
