@@ -31,12 +31,20 @@ else
 fi
 
 ## Grab current branch.
-## If it's not master, exit.
 current_branch=$(git symbolic-ref HEAD 2>/dev/null)
 
-if [[ 'refs/heads/master' != "$current_branch" ]]; then
+if [[ 'refs/heads/master' == "$current_branch" ]]; then
+    # If on master but the last process was a pull let it pass
+    last_process=$(git reflog master -n -1)
+    if [[ "$last_process" == *"pull"* ]];then
+        exit 0
+    fi
+else
+    #Not on master so let is go
 	exit 0
 fi
+
+
 
 echo "Getting status of production repo..."
 
