@@ -15,7 +15,8 @@ function setup() {
  */
 function add_page() {
 
-	add_plugins_page(
+	add_submenu_page(
+		'tools.php',
 		'Repo Safety Net',
 		'Repo Safety Net',
 		'manage_options',
