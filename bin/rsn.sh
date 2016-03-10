@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # Vars
 readonly VERSION="0.1.0"
-readonly PRE_COMMIT=https://raw.githubusercontent.com/scottlee/repo-safety-net/develop/bin/pre-commit
-readonly POST_MERGE=https://raw.githubusercontent.com/scottlee/repo-safety-net/develop/bin/post-merge
-readonly PRE_PUSH=https://raw.githubusercontent.com/scottlee/repo-safety-net/develop/bin/pre-push
+readonly PRE_COMMIT=https://raw.githubusercontent.com/scottlee/repo-safety-net/master/bin/pre-commit
+readonly POST_MERGE=https://raw.githubusercontent.com/scottlee/repo-safety-net/master/bin/post-merge
+readonly PRE_PUSH=https://raw.githubusercontent.com/scottlee/repo-safety-net/master/bin/pre-push
 readonly PREFS_FILE=rsn.prefs
 
 remote_url=""
